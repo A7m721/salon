@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> إدارة حجوزات مركز الفارس</title>
+    <style>
+        body {
+            background-color: aquamarine;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            direction: rtl;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        select {
+            width: calc(100% - 12px);
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50; /* لون أخضر مناسب للصالونات */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1> إدارة حجوزات مركز الفارس</h1>
+
+        <h2>حجز موعد جديد</h2>
+        <form id="newAppointmentForm">
+            <div class="form-group">
+                <label for="customerName">اسم العميل:</label>
+                <input type="text" id="customerName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="appointmentDateTime">تاريخ ووقت الموعد:</label>
+                <input type="datetime-local" id="appointmentDateTime" required>
+            </div>
+
+            <div class="form-group">
+                <label for="service">الخدمة:</label>
+                <select id="service" required>
+                    <option value="">اختر خدمة</option>
+                    <option value="قص الشعر الطويل">قص الشعر الطويل</option>
+        <option value="قص الشعر القصير">قص الشعر القصير</option>
+        <option value="قص الشعر بالمقص">قص الشعر بالمقص</option>
+        <option value="قص الشعر بماكينة الحلاقه">قص الشعر بماكينة الحلاقه</option>
+        <option value="قصات شعر للاطفال">قصات شعر للاطفال</option>
+        <option value="قصة شعر عسكريه">قصة شعر عسكريه</option>
+        <option value="عناية بالذقن">عناية بالذقن</option>
+        <option value="علاج فروة الرأس">علاج فروة الرأس</option>
+        <option value="صبغ الليحه">صبغ الليحه</option>
+        <option value="شامبو وبلسم">شامبو وبلسم</option>
+        <option value="حلاقة مع منشفة ساخنة">حلاقة مع منشفة ساخنة</option>
+        <option value="حلاقة الرأس">حلاقة الرأس</option>
+        <option value="تهذيب الليحه">تهذيب الليحه</option>
+        <option value="تمليس الشعر ">تمليس الشعر </option>
+        <option value="تصفيف الشعر المجعد">تصفيف الشعر المجعد</option>
+        <option value="تحديد الشعر">تحديد الشعر</option>
+        <option value="باقات عروض للعريس ">باقات عروض للعريس</option>
+        <option value="إزالة شعر الوجه">إزالة شعر الوجه</option>
+        <option value="إزالة الشعر بالشمع">إزالة الشعر بالشمع</option>
+        <option value="تلوين الشعر">تلوين الشعر</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="barber">الحلاق:</label>
+                <select id="barber" required>
+                    <option value="">اختر حلاقًا</option>
+                    <option value="العزازي">العزازي</option>
+                    <option value="إبراهيم">إبراهيم</option>
+                    <option value="ياسر">ياسر</option>
+                    <option value="الفلاح">الفلاح</option> 
+                    <option value="رضا">رضا</option>
+                    <option value="السعيد">السعيد</option>
+                   <option value="السيد">السيد</option>
+                   <option value="العوضي">العوضي</option>
+                   <option value="البنجالي">البنجالي</option>
+                   <option value="محمود">محمود</option>
+                </select>
+            </div>
+
+            <button type="button" onclick="addAppointment()">حجز موعد</button>
+            <p id="errorMessage" class="error-message"></p>
+        </form>
+
+        <h2>قائمة المواعيد</h2>
+        <table id="appointmentsTable">
+            <thead>
+                <tr>
+                    <th>اسم العميل</th>
+                    <th>تاريخ ووقت الموعد</th>
+                    <th>الخدمة</th>
+                    <th>الحلاق</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button onclick="exportToExcel()">تصدير إلى Excel</button>
+    </div>
+
+    <script>
+        
+        const appointmentsTableBody = document.getElementById('appointmentsTable').getElementsByTagName('tbody')[0];
+        const errorMessageElement = document.getElementById('errorMessage');
+        let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+        let editingIndex = -1;
+
+        // Load appointments from localStorage when the page loads
+        window.onload = function() {
+            updateAppointmentsTable();
+        };
+
+        function addAppointment() {
+            const customerName = document.getElementById('customerName').value;
+            const appointmentDateTime = document.getElementById('appointmentDateTime').value;
+            const service = document.getElementById('service').value;
+            const barber = document.getElementById('barber').value;
+
+            if (!customerName || !appointmentDateTime || !service || !barber) {
+                errorMessageElement.textContent = 'الرجاء ملء جميع الحقول بشكل صحيح.';
+                return;
+            }
+            // Check for conflicting appointments
+            const isConflict = appointments.some(appointment => {
+                const existingDateTime = new Date(appointment.dateTime);
+                const newDateTime = new Date(appointmentDateTime);
+                const timeDifference = Math.abs(existingDateTime - newDateTime) / (1000 * 60 * 60); // Difference in hours
+                return timeDifference < 2; // Less than 2 hours
+            });
+
+            if (isConflict) {
+                errorMessageElement.textContent = 'هذا الموعد محجوز بالفعل أو الفرق بين المواعيد أقل من ساعتين. يرجى اختيار موعد آخر.';
+                return;
+            }
+
+            errorMessageElement.textContent = '';
+
+            const newAppointment = {
+                customerName: customerName,
+                dateTime: appointmentDateTime,
+                service: service,
+                barber: barber
+            };
+
+            if (editingIndex === -1) {
+                appointments.push(newAppointment);
+            } else {
+                appointments[editingIndex] = newAppointment;
+                editingIndex = -1; // Reset editing index
+            }
+            // Save appointments to localStorage
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            updateAppointmentsTable();
+            document.getElementById('newAppointmentForm').reset();
+        }
+
+        function updateAppointmentsTable() {
+            appointmentsTableBody.innerHTML = '';
+
+            appointments.forEach((appointment, index) => {
+                const newRow = appointmentsTableBody.insertRow();
+
+                const customerNameCell = newRow.insertCell();
+                const dateTimeCell = newRow.insertCell();
+                const serviceCell = newRow.insertCell();
+                const barberCell = newRow.insertCell();
+                const actionsCell = newRow.insertCell();
+
+                customerNameCell.textContent = appointment.customerName;
+                dateTimeCell.textContent = formatDateTime(appointment.dateTime);
+                serviceCell.textContent = getServiceLabel(appointment.service);
+                barberCell.textContent = getBarberLabel(appointment.barber);
+
+                // Add edit button
+                const editButton = document.createElement('button');
+                editButton.textContent = 'تعديل';
+                editButton.onclick = () => editAppointment(index);
+                actionsCell.appendChild(editButton);
+
+                // Add delete button
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'حذف';
+                deleteButton.onclick = () => deleteAppointment(index);
+                actionsCell.appendChild(deleteButton);
+            });
+        }
+
+        function formatDateTime(dateTimeString) {
+            const dateTime = new Date(dateTimeString);
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+            return dateTime.toLocaleDateString('ar-EG', options);
+        }
+
+        function getServiceLabel(serviceValue) {
+            switch (serviceValue) {
+                case 'haircut':
+                    return 'قص شعر';
+                case 'shave':
+                    return 'حلاقة ذقن';
+                case 'hairTreatment':
+                    return 'علاج شعر';
+                case 'beardTrim':
+                    return 'تشذيب لحية';
+                default:
+                    return serviceValue;
+            }
+        }
+
+        function getBarberLabel(barberValue) {
+            switch (barberValue) {
+                case 'barber1':
+                    return 'أحمد';
+                case 'barber2':
+                    return 'علي';
+                case 'barber3':
+                    return 'محمد';
+                default:
+                    return barberValue;
+            }
+        }
+
+        function editAppointment(index) {
+            const appointment = appointments[index];
+            document.getElementById('customerName').value = appointment.customerName;
+            document.getElementById('appointmentDateTime').value = appointment.dateTime;
+            document.getElementById('service').value = appointment.service;
+            document.getElementById('barber').value = appointment.barber;
+            editingIndex = index; // Set editing index
+        }
+
+        function deleteAppointment(index) {
+            appointments.splice(index, 1);
+            updateAppointmentsTable();
+        }
+
+        function exportToExcel() {
+            const ws = XLSX.utils.json_to_sheet(appointments.map(appointment => ({
+                "اسم العميل": appointment.customerName,
+                "تاريخ ووقت الموعد": formatDateTime(appointment.dateTime),
+                "الخدمة": getServiceLabel(appointment.service),
+                "الحلاق": getBarberLabel(appointment.barber)
+            })));
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "المواعيد");
+
+            // تصدير الملف
+            XLSX.writeFile(wb, "المواعيد.xlsx");
+        }
+    </script>
+</body>
+</html>
