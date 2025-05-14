@@ -20,7 +20,7 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            border: 1px solid #ccc;
+            border: 2px solid #111010;
             border-radius: 5px;
         }
 
@@ -39,7 +39,7 @@
         select {
             width: calc(100% - 12px);
             padding: 8px;
-            border: 1px solid #ddd;
+            border: 2px solid #0f0e0e;
             border-radius: 3px;
             box-sizing: border-box;
         }
@@ -48,8 +48,9 @@
             background-color: #4CAF50; /* لون أخضر مناسب للصالونات */
             color: white;
             padding: 10px 15px;
-            border: none;
-            border-radius: 3px;
+            border: 2px solid #0f0e0e;
+            
+            border-radius: 5px;
             cursor: pointer;
         }
 
@@ -64,7 +65,7 @@
         }
 
         th, td {
-            border: 1px solid #ddd;
+            border: 3px solid #0b0707;
             padding: 8px;
             text-align: right;
         }
@@ -88,7 +89,7 @@
         <form id="newAppointmentForm">
             <div class="form-group">
                 <label for="customerName">اسم العميل:</label>
-                <input type="text" id="customerName" required>
+                <input type="text" id="customerName" required placeholder="الأسم بالكامل">
             </div>
 
             <div class="form-group">
@@ -98,46 +99,12 @@
 
             <div class="form-group">
                 <label for="service">الخدمة:</label>
-                <select id="service" required>
-                    <option value="">اختر خدمة</option>
-                    <option value="قص الشعر الطويل">قص الشعر الطويل</option>
-        <option value="قص الشعر القصير">قص الشعر القصير</option>
-        <option value="قص الشعر بالمقص">قص الشعر بالمقص</option>
-        <option value="قص الشعر بماكينة الحلاقه">قص الشعر بماكينة الحلاقه</option>
-        <option value="قصات شعر للاطفال">قصات شعر للاطفال</option>
-        <option value="قصة شعر عسكريه">قصة شعر عسكريه</option>
-        <option value="عناية بالذقن">عناية بالذقن</option>
-        <option value="علاج فروة الرأس">علاج فروة الرأس</option>
-        <option value="صبغ الليحه">صبغ الليحه</option>
-        <option value="شامبو وبلسم">شامبو وبلسم</option>
-        <option value="حلاقة مع منشفة ساخنة">حلاقة مع منشفة ساخنة</option>
-        <option value="حلاقة الرأس">حلاقة الرأس</option>
-        <option value="تهذيب الليحه">تهذيب الليحه</option>
-        <option value="تمليس الشعر ">تمليس الشعر </option>
-        <option value="تصفيف الشعر المجعد">تصفيف الشعر المجعد</option>
-        <option value="تحديد الشعر">تحديد الشعر</option>
-        <option value="باقات عروض للعريس ">باقات عروض للعريس</option>
-        <option value="إزالة شعر الوجه">إزالة شعر الوجه</option>
-        <option value="إزالة الشعر بالشمع">إزالة الشعر بالشمع</option>
-        <option value="تلوين الشعر">تلوين الشعر</option>
-                </select>
+                <input type="text" id="service" required placeholder="إختار الخدمة">
             </div>
 
             <div class="form-group">
                 <label for="barber">الحلاق:</label>
-                <select id="barber" required>
-                    <option value="">اختر حلاقًا</option>
-                    <option value="العزازي">العزازي</option>
-                    <option value="إبراهيم">إبراهيم</option>
-                    <option value="ياسر">ياسر</option>
-                    <option value="الفلاح">الفلاح</option> 
-                    <option value="رضا">رضا</option>
-                    <option value="السعيد">السعيد</option>
-                   <option value="السيد">السيد</option>
-                   <option value="العوضي">العوضي</option>
-                   <option value="البنجالي">البنجالي</option>
-                   <option value="محمود">محمود</option>
-                </select>
+                <input type="text" id="barber" required placeholder="إختار الحلاق">
             </div>
 
             <button type="button" onclick="addAppointment()">حجز موعد</button>
@@ -159,6 +126,8 @@
             </tbody>
         </table>
         <button onclick="exportToExcel()">تصدير إلى Excel</button>
+        
+        
     </div>
 
     <script>
